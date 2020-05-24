@@ -1,7 +1,15 @@
-
 #include <stdlib.h>
+#include <stdio.h>
+
 #include "list.h"
 
+Item removeLink(link *);
+
+
+void listInit(link *head_ptr)
+{
+	*head_ptr = NULL;
+}
 
 int	isEmpty(link head)
 {
@@ -11,7 +19,6 @@ int	isEmpty(link head)
 // insert after node
 int	insert(link *node, Item i)
 { 
-	link aux;
 	link t = (link) malloc(sizeof(*t));
 	if (t == NULL)
 		return 0;
@@ -33,7 +40,7 @@ int	insert(link *node, Item i)
 }
 
 
-Item remove(link * t)
+Item removeLink(link * t)
 {
 	Item i;
 	link aux;
@@ -53,7 +60,7 @@ Item remove(link * t)
 Item FIFOremove(link * head_ptr)
 {
 	// remove first element
-	return remove(head_ptr);
+	return removeLink(head_ptr);
 }
 
 Item LIFOremove(link * head_ptr)
@@ -67,7 +74,7 @@ Item LIFOremove(link * head_ptr)
 
 	for (t = *head_ptr ; t->next != NULL; t = t -> next);
 
-	return remove(&(t -> next));
+	return removeLink(&(t -> next));
 }
 
 int FIFOinsert(link * head_ptr, Item i)
@@ -89,19 +96,19 @@ int LIFOinsert(link * head_ptr, Item i)
 	return insert(head_ptr, i);
 }
 
-void list(link * head_ptr)
+void list(link head_ptr)
 {
 	link t;
-	for (t = *head_ptr ; t != NULL; t = t -> next)
+	for (t = head_ptr ; t != NULL; t = t -> next)
 	{
 		print_item(t->item);
 	}
 }
 
-Item * search(link * head_ptr, Item i)
+Item * searchItem(link head_ptr, Item i)
 {
 	link t;
-	for (t = *head_ptr ; t != NULL; t = t -> next)
+	for (t = head_ptr ; t != NULL; t = t -> next)
 	{
 		if (item_isEqual(t->item, i))
 			return &(t->item);
@@ -109,5 +116,9 @@ Item * search(link * head_ptr, Item i)
 	return NULL;
 }
 
-
+void clearList(link *head_ptr)
+{
+	while (!isEmpty(*head_ptr))
+		removeLink(head_ptr);
+}
 

@@ -1,25 +1,33 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+
 #include "Item.h"
 #include "list.h"
+
+//#define LIFO
+#define FIFO
+
 
 #define OPT_REM 'R'
 #define OPT_ADD 'N'
 #define OPT_LIST 'L'
 #define OPT_QUIT 'Q'
-
+#define OPT_SEARCH 'S'
 
 #define DIM 256
 
-void readfile(char *, link **);
-
+void readfile(char *, link *);
 
 int main(int argc, char **argv)
 {
-	link * head;
+	link head;
 	Item aux;
+	Item * item_ptr;
 
+	listInit(&head);
 	
-	FILE * fp = NULL;
 	char input[DIM];
 	char option;
 
@@ -45,13 +53,33 @@ int main(int argc, char **argv)
 		switch(toupper(option))
 		{
 		case OPT_REM:
-			FIFOremove(&head);
+			if (!isEmpty(head))
+			{
+				#ifdef FIFO
+				aux = FIFOremove(&head);
+				#else
+				aux = LIFOremove(&head);
+				#endif
+
+				puts("ok removed item:");
+				print_item(aux);
+			}
+			else
+				puts("The queue is empty");
 			continue;
 
 		case OPT_ADD:
 			if (sscanf(input, " %c %s %d %[^\n]", &option, aux.nr, &aux.id, aux.name) != 4)
+			{
+				printf("Sintax: '%c' <nr> <id> <name>\n", OPT_ADD);
 				continue;
+			}
+		
+			#ifdef FIFO
 			FIFOinsert(&head, aux);
+			#else
+			LIFOinsert(&head, aux);
+			#endif				
 
 		case OPT_LIST:
 			list(head);
@@ -60,19 +88,38 @@ int main(int argc, char **argv)
 		case OPT_QUIT:
 			exit(0);
 
+
+		case OPT_SEARCH:
+			memset(&aux, 0, sizeof(Item));
+			if (sscanf(input, " %c %d", &option, &aux.id) != 2)
+			{
+				printf("Sintax: '%c' <id>\n", OPT_SEARCH);
+				continue;
+			}
+			item_ptr = searchItem(head, aux);
+			if (item_ptr == NULL)
+				puts("Sorry, Item not found");
+			else
+			{
+				puts("Urray, found the following Item:");
+				print_item(*item_ptr);
+			}
+
 		default:
 			puts("unknown option");
 
 		}
 	}
 
+	clearList(&head);
+
 	exit(0);
 }
 
-void readfile(char * fname, link ** head_ptr)
+void readfile(char * fname, link * head_ptr)
 {
-	FILE * fp = NULL;
 	Item aux;
+	FILE * fp = NULL;
 
 	fp = fopen(fname, "r");
 	if (fp == NULL)
@@ -86,7 +133,7 @@ void readfile(char * fname, link ** head_ptr)
 		if (fscanf(fp, "%s %d %[^\n]", aux.nr, &aux.id, aux.name) != 3)
 			continue;
 
-		if (!insert(head_ptr, aux))
+		if (!FIFOinsert(head_ptr, aux))
 		{
 			puts("Error: out of memory!");
 			exit(1);

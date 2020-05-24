@@ -11,5 +11,6 @@ typedef struct {
 
 
 void print_item(Item i);
+int item_isEqual(Item, Item);
 
 #endif

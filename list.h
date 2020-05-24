@@ -10,14 +10,16 @@ struct node {
 	link next;
 };
 
+void listInit(link *);
 int	isEmpty(link);
-Item FIFOremove(link * head_ptr);
-Item LIFOremove(link * head_ptr);
-int FIFOinsert(link * head_ptr, Item i);
-int LIFOinsert(link * head_ptr, Item i);
+Item FIFOremove(link *);
+Item LIFOremove(link *);
+int FIFOinsert(link *, Item);
+int LIFOinsert(link *, Item);
 
-void list(link * head_ptr);
-//Item search()
+void list(link);
 
+Item * searchItem(link, Item);
+void clearList(link *);
 
 #endif
