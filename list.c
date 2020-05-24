@@ -26,13 +26,9 @@ int	insert(link *node, Item i)
 	t -> item = i;
 
 	if (*node == NULL)
-	{
 		t -> next = NULL;
-	} 
-	else
-	{		
-		t->next = (*node) -> next;
-	}
+	else	
+		t->next = *node;
 
 	*node = t;
 
@@ -65,16 +61,8 @@ Item FIFOremove(link * head_ptr)
 
 Item LIFOremove(link * head_ptr)
 {
-	link t;
-	if (*head_ptr == NULL)
-	{
-		puts("Error: cannot delete node from empty list");
-		exit(1);		
-	}
-
-	for (t = *head_ptr ; t->next != NULL; t = t -> next);
-
-	return removeLink(&(t -> next));
+	// remove first element
+	return removeLink(head_ptr);
 }
 
 int FIFOinsert(link * head_ptr, Item i)
@@ -92,7 +80,7 @@ int FIFOinsert(link * head_ptr, Item i)
 }
 int LIFOinsert(link * head_ptr, Item i)
 {
-	// insert at the top?
+	// insert at the top of the list
 	return insert(head_ptr, i);
 }
 
@@ -105,6 +93,9 @@ void list(link head_ptr)
 	}
 }
 
+// in case you want do search and delete a specific link
+// you need to search and return the pointer to the link
+// instead of the pointer to the item.
 Item * searchItem(link head_ptr, Item i)
 {
 	link t;

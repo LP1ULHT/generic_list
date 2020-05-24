@@ -6,9 +6,8 @@
 #include "Item.h"
 #include "list.h"
 
-//#define LIFO
-#define FIFO
-
+#define LIFO
+//#define FIFO
 
 #define OPT_REM 'R'
 #define OPT_ADD 'N'
@@ -91,7 +90,7 @@ int main(int argc, char **argv)
 
 		case OPT_SEARCH:
 			memset(&aux, 0, sizeof(Item));
-			if (sscanf(input, " %c %d", &option, &aux.id) != 2)
+			if (sscanf(input, " %c %d ", &option, &aux.id) != 2)
 			{
 				printf("Sintax: '%c' <id>\n", OPT_SEARCH);
 				continue;
@@ -104,6 +103,7 @@ int main(int argc, char **argv)
 				puts("Urray, found the following Item:");
 				print_item(*item_ptr);
 			}
+			break;
 
 		default:
 			puts("unknown option");
@@ -133,10 +133,17 @@ void readfile(char * fname, link * head_ptr)
 		if (fscanf(fp, "%s %d %[^\n]", aux.nr, &aux.id, aux.name) != 3)
 			continue;
 
+		#ifdef FIFO
 		if (!FIFOinsert(head_ptr, aux))
+		#else
+		if (!LIFOinsert(head_ptr, aux))
+		#endif
 		{
 			puts("Error: out of memory!");
 			exit(1);
 		}
+		
+
+
 	}
 }
