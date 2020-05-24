@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <stdio.h>
+#include <assert.h>
 
 #include "list.h"
 
@@ -41,12 +41,7 @@ Item removeLink(link * t)
 	Item i;
 	link aux;
 	aux = *t;
-
-	if (aux == NULL)
-	{
-		puts("Error: cannot delete NULL link");
-		exit(1);
-	}
+	assert(aux != NULL);
 	i = aux -> item;
 	*t = aux -> next;
 	free(aux);
@@ -96,10 +91,10 @@ void list(link head_ptr)
 // in case you want do search and delete a specific link
 // you need to search and return the pointer to the link
 // instead of the pointer to the item.
-Item * searchItem(link head_ptr, Item i)
+Item * searchItem(link head, Item i)
 {
 	link t;
-	for (t = head_ptr ; t != NULL; t = t -> next)
+	for (t = head ; t != NULL; t = t -> next)
 	{
 		if (item_isEqual(t->item, i))
 			return &(t->item);
